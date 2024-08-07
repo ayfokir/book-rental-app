@@ -1,10 +1,13 @@
 import Image from "next/image";
-import styles from "./page.module.css";
-
+import Register from "@/components/register/Register";
+import Header from "@/components/header/Header";
+import TrendsSection from "@/components/trend/Trend";
 export default function Home() {
   return (
-    <main className={styles.main}>
-      Bookn  Rental App
+    <main>
+<Header  />
+<TrendsSection  />
+
     </main>
   );
 }
