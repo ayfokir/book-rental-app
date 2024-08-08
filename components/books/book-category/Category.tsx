@@ -15,7 +15,7 @@ const CategoryItem: React.FC<CategoryItemProps> = ({ image, label }) => {
             <Image
                 src={image} 
                 alt={label} 
-                width={320}
+                width={200}
                 height={260}
                 />
             <Typography variant="subtitle1">{label}</Typography>

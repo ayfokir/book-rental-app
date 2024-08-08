@@ -1,57 +1,50 @@
-// components/GiftCategories.js
-import React from 'react';
-import { Box, Typography, Grid, Card, CardMedia, CardContent } from '@mui/material';
+// components/TrendsSection.tsx
+import React from "react";
+import { Typography, Grid, Box, Container } from "@mui/material";
+import CategoryItem from "./book-category/Category";
 
-const giftCategories = [
-  {
-    title: 'Anniversary gifts',
-    image: '/path/to/anniversary-image.jpg', // replace with actual image path
-  },
-  {
-    title: 'Gifts for him',
-    image: '/path/to/gifts-for-him-image.jpg', // replace with actual image path
-  },
-  {
-    title: 'Gifts for her',
-    image: '/path/to/gifts-for-her-image.jpg', // replace with actual image path
-  },
-  {
-    title: 'Personalized gift ideas',
-    image: '/path/to/personalized-gift-ideas-image.jpg', // replace with actual image path
-  },
-  {
-    title: 'Wedding gifts',
-    image: '/path/to/wedding-gifts-image.jpg', // replace with actual image path
-  },
+interface Trend {
+  image: string;
+  label: string;
+}
+
+const trends: Trend[] = [
+  { image: "/trendes/Think and Grow Rich.jpeg", label: "Think and Grow Rich" },
+  // { image: '/trendes/Start With Why Book , Simon Sinek - Simon Sinek.jpeg', label: 'Start With Why Book , Simon Sinek - Simon Sinek' },
+  { image: "/trendes/The Power of Know.jpeg", label: "The Power of Know" },
+  // { image: '/trendes/The Secret.jpeg', label: 'The Secret' },
+  { image: "/trendes/Think and Grow Rich.jpeg", label: "Think and Grow Rich" },
+  { image: "/trendes/The Power of Know.jpeg", label: "The Power of Know" },
+
+  { image: "/trendes/Rich Dad Poor Dad.jpeg", label: "Rich Dad Poor Dad" },
+  { image: "/trendes/Atomic Habit.jpeg", label: "Atomic Habit" },
+  { image: "/trendes/Rich Dad Poor Dad.jpeg", label: "Rich Dad Poor Dad" },
+  { image: "/trendes/Atomic Habit.jpeg", label: "Atomic Habit" },
+
+  // { image: '/trendes/Art of power.jpg', label: 'Art of power' },
+  { image: "/trendes/Awakyans.jpg", label: "Awakyans" },
+  { image: "/trendes/freen Michaels.jpg", label: "freen Michaels" },
+  // { image: '/trendes/over ruled.jpg', label: 'over ruled' },
+  // { image: '/trendes/start.png', label: 'Start' },
 ];
 
-const GiftCategories = () => {
+const Books: React.FC = () => {
   return (
-    <Box sx={{ padding: '20px' }}>
-      <Typography variant="h5" component="h2" gutterBottom>
-        Shop our popular gift categories
-      </Typography>
-      <Grid container spacing={3}>
-        {giftCategories.map((category, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={2} key={index}>
-            <Card>
-              <CardMedia
-                component="img"
-                height="140"
-                image={category.image}
-                alt={category.title}
-              />
-              <CardContent>
-                <Typography variant="h6" component="div">
-                  {category.title}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
+    <Container maxWidth="xl">
+      <Box sx={{ textAlign: "center", py: 2 }}>
+        <Typography variant="h5" gutterBottom sx={{ pb: 6, pt: 4 }}>
+          Check out the season's biggest trends
+        </Typography>
+        <Grid container spacing={2} justifyContent="center">
+          {trends.map((trend, index) => (
+            <Grid item key={index} sx={{ gap: 8 }}>
+              <CategoryItem image={trend.image} label={trend.label} />
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    </Container>
   );
 };
 
-export default GiftCategories;
+export default Books;
