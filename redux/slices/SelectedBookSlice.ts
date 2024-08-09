@@ -1,40 +1,48 @@
-// selectedSongSlice.ts
+// selectedBookSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-// Define the Song interface
-export interface Song {
-    _id: string | undefined;
+
+// Define the Book interface
+export interface Book {
     title: string;
-    artist: string;
-    album: string;
-    genre: string;
+    image: string;
+    description: string;
+    rental_price: string;
+    rating: string;
 }
-interface selectedSongState {
-    selectedSong: Song | null;
+
+interface SelectedBookState {
+    selectedBook: Book | null;
     loading: boolean;
     error: string | null;
-  }
-  
-  const initialState: selectedSongState = {
-    selectedSong: null,
+}
+
+const initialState: SelectedBookState = {
+    selectedBook: null,
     loading: false,
     error: null,
-    };
+};
 
-const selectedSongSlice = createSlice({
-  name: 'selectedSong',
-  initialState,
-  reducers: {
-    setSelectedSong(state, action: PayloadAction<Song>) {
-      console.log("see selected song ")
-      console.log(action)
-      state.selectedSong = action.payload;
-    },
-    clearSelectedSong(state) {
-    state.selectedSong = null;
-    },
+const selectedBookSlice = createSlice({
+    name: 'selectedBook',
+    initialState,
+    reducers: {
+        setSelectedBook(state, action: PayloadAction<Book>) {
+            console.log("Selected book: ", action.payload);
+            state.selectedBook = action.payload;
+        },
+        clearSelectedBook(state) {
+            state.selectedBook = null;
+        },
+        // Optionally handle loading and error states
+        setLoading(state, action: PayloadAction<boolean>) {
+            state.loading = action.payload;
+        },
+        setError(state, action: PayloadAction<string | null>) {
+            state.error = action.payload;
+        },
     },
 });
 
-export const { setSelectedSong, clearSelectedSong } = selectedSongSlice.actions;
+export const { setSelectedBook, clearSelectedBook, setLoading, setError } = selectedBookSlice.actions;
 
-export default selectedSongSlice.reducer;
+export default selectedBookSlice.reducer;

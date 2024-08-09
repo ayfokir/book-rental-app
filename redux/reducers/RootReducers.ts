@@ -1,11 +1,11 @@
 // rootReducer.ts
 import { combineReducers } from 'redux';
 import bookReducer from '../slices/Slice'
-// import selectedBookReducer from '../slices/selectedBookSlice';
+import selectedBookReducer from '../slices/SelectedBookSlice';
 
 const rootReducer = combineReducers({
   books: bookReducer,
-  // selectedBook: selectedBookReducer,
+  selectedBook: selectedBookReducer,
 });
 
 // export type RootState = ReturnType<typeof rootReducer>;
