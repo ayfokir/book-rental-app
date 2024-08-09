@@ -1,8 +1,10 @@
-import React from 'react'
 
 const BookDetail = () => {
   return (
-    <div>BookDetail</div>
+    <div>
+      BookDetail component
+      
+      </div>
   )
 }
 

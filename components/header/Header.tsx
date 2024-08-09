@@ -6,7 +6,6 @@ import SearchBar from './SearchBar';
 import IconsAndSignIn from './IconsAndSignIn';
 import Image from 'next/image';
 import MenuIcon from '@mui/icons-material/Menu';
-import Category from './Category';
 import CategoryPopover from './Category';
 
 // Inside your component
@@ -67,6 +66,7 @@ const handleClose = () => {
             <IconsAndSignIn />
           </Toolbar>
         </Container>
+        <Container >
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 5 }}>
           <Button>Gift Mode</Button>
           <Button>Back-to-School Savings</Button>
@@ -75,7 +75,9 @@ const handleClose = () => {
           <Button>Registry</Button>
         </Box>
         <Divider sx={{ pt: 1 }} />
-        <CategoryPopover anchorEl={anchorEl} open={open} onClose={handleClose} />      </Box>
+        <CategoryPopover anchorEl={anchorEl} open={open} onClose={handleClose} />     
+        </Container>
+        </Box>
     ) : (
       
       <Container>
@@ -95,7 +97,7 @@ const handleClose = () => {
         </Box>
         <CategoryPopover anchorEl={anchorEl} open={open} onClose={handleClose} />
         </Container>
-
+        
     )
   );  
 };
