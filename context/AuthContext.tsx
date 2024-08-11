@@ -31,20 +31,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLogged, setIsLogged] = useState<boolean>(false);
   // const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [role, setRole] = useState<any>(null); // Define a specific type for employee if known
-
+  
   const value = { isLogged, role, setRole,  setIsLogged };
-
+  
   useEffect(() => {
     // Retrieve the logged in user from local storage
     const loggedInUser = getAuth();
     loggedInUser.then((response) => {
       if (response.token) {
-        setIsLogged(true);
-        // 3 is the employee_role for admin
-        // if (response.employee_role === 3) {
-        //   setIsAdmin(true);
-        // }
-        // setEmployee(response);
+        // setIsLogged(true);
+        setRole(response.role)
       }
     });
   }, []);

@@ -4,14 +4,11 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export interface Book {
     book_id?: string;
     owner_id?: string;
-    owner?: string;
-    title: string;
+    book_name: string;
     author?: string;
-    image: string
-    rating: string
+    book_cover: string
     category?: string;
-    description: string;
-    rental_price: string;
+    price: string;
     quantity?: string;
     status?: string ;
     book_no?: string

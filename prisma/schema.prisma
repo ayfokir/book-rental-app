@@ -147,26 +147,32 @@ model User {
   location       String
   created_at     DateTime  @default(now())
   updated_at     DateTime  @updatedAt
-  Books          Book[]    @relation("BookOwner")
+  Books          BookUploaded[]    @relation("BookOwner")
   Rentals        Rental[]  @relation("RenterRentals")
-  Reviews        Review[]
   TransactionsAsRenter  Transaction[] @relation("RenterTransactions")
   TransactionsAsOwner   Transaction[] @relation("OwnerTransactions")
   AdminActivitiesAsAdmin AdminActivity[] @relation("AdminActions")
   AdminActivitiesAsTargetUser AdminActivity[] @relation("TargetUserActions")
-  Orders         Order[]
 }
 
 model Book {
   book_id        Int       @id @default(autoincrement())
+  book_name       String
+  author_name     String 
+  author         String
+  category       Category 
+}
+
+
+model BookUploaded {
+  book_id        Int       @id @default(autoincrement())
   owner_id       Int
   owner          User      @relation(fields: [owner_id], references: [user_id], name: "BookOwner")
-  title          String
+  book_name       String
+  author_name     String 
   author         String
-  category_id    Int
-  category       Category  @relation(fields: [category_id], references: [category_id])
-  description    String
-  rental_price   Float
+  category       String 
+  price   Float
   book_no        Int
   quantity       Int
   status         BookStatus
@@ -174,13 +180,12 @@ model Book {
   updated_at     DateTime  @updatedAt
   Rentals        Rental[]
   AdminActivities AdminActivity[] @relation("TargetBookActions")
-  Orders         Order[]
 }
 
 model Rental {
   rental_id     Int      @id @default(autoincrement())
   book_id       Int
-  book          Book     @relation(fields: [book_id], references: [book_id])
+  book          BookUploaded     @relation(fields: [book_id], references: [book_id])
   renter_id     Int
   renter        User     @relation(fields: [renter_id], references: [user_id], name: "RenterRentals")
   rental_start  DateTime
@@ -188,22 +193,10 @@ model Rental {
   status        RentalStatus
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
-  Reviews       Review[]
   Transactions  Transaction[]
 }
 
-model Review {
-  review_id     Int      @id @default(autoincrement())
-  rental_id     Int
-  rental        Rental   @relation(fields: [rental_id], references: [rental_id])
-  renter_id     Int
-  renter        User     @relation(fields: [renter_id], references: [user_id])
-  rating        Int
-  comment       String
-  status        ReviewStatus @default(pending)
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
-}
+
 
 model Transaction {
   transaction_id Int       @id @default(autoincrement())
@@ -227,28 +220,17 @@ model AdminActivity {
   target_user_id  Int?     
   target_user     User?    @relation(fields: [target_user_id], references: [user_id], name: "TargetUserActions")
   target_book_id  Int?     
-  target_book     Book?    @relation(fields: [target_book_id], references: [book_id], name: "TargetBookActions")
+  target_book     BookUploaded?    @relation(fields: [target_book_id], references: [book_id], name: "TargetBookActions")
   details         String
   created_at      DateTime @default(now())
 }
 
-model Order {
-  order_id       Int       @id @default(autoincrement())
-  user_id        Int
-  user           User      @relation(fields: [user_id], references: [user_id])
-  book_id        Int
-  book           Book      @relation(fields: [book_id], references: [book_id])
-  quantity       Int
-  total_price    Float
-  status         OrderStatus
-  created_at     DateTime  @default(now())
-  updated_at     DateTime  @updatedAt
-}
 
-model Category {
-  category_id    Int       @id @default(autoincrement())
-  name           String
-  Books          Book[]
+
+enum Category {
+    Fiction
+    SelfHelp
+    Business
 }
 
 enum Role {
@@ -275,15 +257,4 @@ enum TransactionStatus {
   failed
 }
 
-enum ReviewStatus {
-  pending
-  approved
-  rejected
-}
 
-enum OrderStatus {
-  pending
-  shipped
-  delivered
-  cancelled
-}

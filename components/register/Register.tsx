@@ -1,194 +1,3 @@
-// 'use client'
-// import React, { useState, ChangeEvent, FormEvent, useContext } from 'react';
-// import { Box, TextField, Button, Checkbox, FormControlLabel, Typography, Link, Container, Divider } from '@mui/material';
-// import Image from 'next/image';
-// import { useFormStatus } from 'react-dom';
-// import { RegisterUser } from '@/app/api/register/RegisterUser';
-// import NotificationContext from "@/context/NotificationContext";
-// import { Notification } from '../notification/Notification';
-
-// interface UserData {
-//   email: string;
-//   password: string;
-//   confirmPassword: string;
-//   location: string;
-//   phone: string;
-// }
-
-// const Register: React.FC = () => {
-//   const [userData, setUserData] = useState<UserData>({
-//     email: "",
-//     password: "",
-//     confirmPassword: "",
-//     location: "",
-//     phone: "",
-//   });
-
-//   const { pending } = useFormStatus();
-//   const notificationCtx = useContext(NotificationContext);
-//   const [notification, setNotification] = useState<{ status: string, message: string }>({ status: 'none', message: '' });
-
-//   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-//     const { name, value } = e.target;
-//     setUserData(prevState => ({
-//       ...prevState,
-//       [name]: value,
-//     }));
-//   };
-
-//   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-//     e.preventDefault();
-//     const formData = new FormData(e.currentTarget);
-//     console.log("formData:", formData);
-
-//     // Reset the notification state to an intermediate state
-//     setNotification({ status: 'none', message: '' });
-
-//     const result = await RegisterUser(formData);
-//     console.log("result:", result); // Handle the response from the server action
-//     console.log("error", result.error);
-//     if (result.success) {
-//       console.log("inside register");
-//       setNotification({
-//         status: "success",
-//         message: result.message || "User successfully Registered.",
-//       });
-//     } else {
-//       console.log("inside fail register");
-//       setNotification({
-//         status: "error",
-//         // message: result.error as string || "User Registration failed.",
-//         message: "User Registration failed.",
-//       });
-//     }
-//   };
-
-//   return (
-//     <Container maxWidth="xs">
-//       <Box
-//         sx={{
-//           display: 'flex',
-//           flexDirection: 'column',
-//           alignItems: 'center',
-//           mt: 4,
-//         }}
-//       >
-//         <Box
-//           sx={{
-//             display: 'flex',
-//             flexDirection: 'column',
-//             alignItems: 'center',
-//             width: '100%',
-//           }}
-//         >
-//           <Box sx={{ display: 'flex', width: '100%', mb: 2 }}>
-//             <Image
-//               src='/logo/book.png'
-//               width={60}
-//               height={40}
-//               alt='Logo'
-//             />
-//             <Typography variant="h4" component="h1" gutterBottom sx={{ ml: 2 }}>
-//               Book Rent
-//             </Typography>
-//           </Box>
-//           <Typography variant="h6" component="h2" gutterBottom sx={{ width: '100%' }}>
-//             Signup into Book Rent
-//           </Typography>
-//           <Divider sx={{ width: '100%', mb: 2 }} />
-//         </Box>
-//         <Box
-//           component="form"
-//           onSubmit={handleSubmit}
-//           sx={{
-//             mt: 1,
-//             width: '100%',
-//           }}
-//         >
-//           <TextField
-//             margin="normal"
-//             required
-//             fullWidth
-//             id="email"
-//             label="Email Address"
-//             name="email"
-//             type="email"
-//             autoComplete="email"
-//             autoFocus
-//             value={userData.email}
-//             onChange={handleChange}
-//           />
-//           <TextField
-//             margin="normal"
-//             required
-//             fullWidth
-//             name="password"
-//             label="Password"
-//             type="password"
-//             id="password"
-//             autoComplete="current-password"
-//             value={userData.password}
-//             onChange={handleChange}
-//           />
-//           <TextField
-//             margin="normal"
-//             required
-//             fullWidth
-//             name="confirmPassword"
-//             label="Confirm Password"
-//             type="password"
-//             id="confirmPassword"
-//             value={userData.confirmPassword}
-//             onChange={handleChange}
-//           />
-//           <TextField
-//             margin="normal"
-//             required
-//             fullWidth
-//             name="location"
-//             label="Location"
-//             id="location"
-//             value={userData.location}
-//             onChange={handleChange}
-//           />
-//           <TextField
-//             margin="normal"
-//             required
-//             fullWidth
-//             name="phone"
-//             label="Phone Number"
-//             id="phone"
-//             value={userData.phone}
-//             onChange={handleChange}
-//           />
-//           <FormControlLabel
-//             control={<Checkbox value="terms" color="primary" />}
-//             label="I accept the Terms and Conditions"
-//           />
-//           <Button
-//             type="submit"
-//             fullWidth
-//             variant="contained"
-//             color="primary"
-//             sx={{ mt: 3, mb: 2 }}
-//             disabled={pending}
-//           >
-//             {pending ? 'Submitting...' : 'Sign Up'}
-//           </Button>
-//           <Typography variant="body2" color="textSecondary" align="center">
-//             Already have an account?{' '}
-//             <Link href="/login" variant="body2">
-//               Login
-//             </Link>
-//           </Typography>
-//         </Box>
-//       </Box>
-//       <Notification key={notification.status + notification.message} status={notification.status} message={notification.message} />
-//     </Container>
-//   );
-// };
-
-// export default Register;
 'use client';
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Box, TextField, Button, Checkbox, FormControlLabel, Typography, Link, Container, Divider } from '@mui/material';
@@ -271,7 +80,7 @@ const Register: React.FC = () => {
 
     const formData = new FormData(e.currentTarget);
     const result = await RegisterUser(formData);
-    console.log(result)
+    console.log(result);
     if (result.success) {
       setNotification({
         status: 'success',
@@ -280,19 +89,42 @@ const Register: React.FC = () => {
     } else {
       setNotification({
         status: 'error',
-        message:  result.error as string || 'User Registration failed.',
+        message: result.error as string || 'User Registration failed.',
       });
     }
   };
 
   return (
-    <Container maxWidth="xs">
+    <Box sx={{ display: 'flex', width: '100%', height: '100vh' }}>
+      {/* Left Box: Image centered */}
       <Box
         sx={{
+          width: '50%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgb(23,27,54)',
+        }}
+      >
+        <Image
+          src='/logo/book.png'
+          width={200}
+          height={200}
+          alt='Logo'
+        />
+      </Box>
+
+      {/* Right Box: Registration form */}
+      <Box
+        sx={{
+          width: '50%',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          mt: 4,
+          justifyContent: 'center',
+          p: 15, // Add some padding
+        overflowY: 'auto', // Allow vertical scrolling if content overflows
+          backgroundColor: 'white', // Optional: set a background color if needed
         }}
       >
         <Box
@@ -303,7 +135,8 @@ const Register: React.FC = () => {
             width: '100%',
           }}
         >
-          <Box sx={{ display: 'flex', width: '100%', mb: 2 }}>
+          <Box sx={{ display: 'flex', width: '100%', mb: 2,     overflow: 'hidden',  // Ensure no content gets clipped
+           }}>
             <Image
               src='/logo/book.png'
               width={60}
@@ -428,7 +261,7 @@ const Register: React.FC = () => {
         </Box>
       </Box>
       <Notification />
-    </Container>
+    </Box>
   );
 };
 

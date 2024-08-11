@@ -66,7 +66,7 @@ const handleClose = () => {
             <IconsAndSignIn />
           </Toolbar>
         </Container>
-        <Container >
+        
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 5 }}>
           <Button>Gift Mode</Button>
           <Button>Back-to-School Savings</Button>
@@ -74,9 +74,14 @@ const handleClose = () => {
           <Button>Fashion Finds</Button>
           <Button>Registry</Button>
         </Box>
-        <Divider sx={{ pt: 1 }} />
+        <Divider sx={{
+          pt: 1,
+          borderBottomWidth: 2, // Adjust thickness (default is 1px)
+          // borderBottomColor: 'primary.main', // Change color if needed (e.g., 'black' or theme color)
+          borderBottomStyle: 'solid' // Ensure the style is solid
+          }} />
         <CategoryPopover anchorEl={anchorEl} open={open} onClose={handleClose} />     
-        </Container>
+      
         </Box>
     ) : (
       
