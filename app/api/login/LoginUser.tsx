@@ -86,7 +86,7 @@ export async function LoginUser(formData: FormData) {
     return {
       message: 'Login successful',
       token, // Include the token in the response if needed
-      user,
+      // user,
       success: true,
     };
 

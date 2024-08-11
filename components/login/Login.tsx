@@ -1,11 +1,13 @@
 'use client';
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { Box, TextField, Button, Typography, Link, Container, Divider } from '@mui/material';
+import { Box, TextField, Button, Typography, Link, Divider } from '@mui/material';
 import Image from 'next/image';
 import { useFormStatus } from 'react-dom';
 import { LoginUser } from '@/app/api/login/LoginUser'; 
 import { useNotification } from '@/context/NotificationContext';
 import { Notification } from '../notification/Notification';
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 interface LoginData {
   email: string;
@@ -21,7 +23,9 @@ const Login: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { pending } = useFormStatus();
   const { setNotification } = useNotification();
+  const {setIsLogged} =  useAuth()
 
+  const router = useRouter();  
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setLoginData(prevState => ({
@@ -29,8 +33,8 @@ const Login: React.FC = () => {
       [name]: value,
     }));
 
-         // Clear the error for the field that is being edited
-        setErrors(prevState => ({
+    // Clear the error for the field that is being edited
+    setErrors(prevState => ({
       ...prevState,
       [name]: '',
     }));
@@ -53,20 +57,21 @@ const Login: React.FC = () => {
       setErrors(formErrors);
       return;
     }
-
+    
     setNotification({ status: 'none', message: '' });
-
+    
     const formData = new FormData(e.currentTarget);
     const result = await LoginUser(formData);
-    console.log("result:", result)
+    console.log("result:", result);
     if (result.success) {
-
-      // let us save token to local storage 
-      localStorage.setItem("bearer_token", JSON.stringify(result.token))
+      // Save token to local storage
+      localStorage.setItem("customer", JSON.stringify(result.token));
       setNotification({
         status: 'success',
         message: result.message || 'Login successful.',
       });
+      setIsLogged(true)
+      router.push("/dashboard");
     } else {
       setNotification({
         status: 'error',
@@ -74,15 +79,37 @@ const Login: React.FC = () => {
       });
     }
   };
-
+  
   return (
-    <Container maxWidth="xs">
+    <Box sx={{ display: 'flex', width: '100%', height: '100vh' }}>
+      {/* First Box: Image centered */}
       <Box
         sx={{
+          width: '50%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgb(23,27,54)',
+        }}
+      >
+        <Image
+          src='/logo/book.png'
+          width={200}
+          height={200}
+          alt='Logo'
+        />
+      </Box>
+
+      {/* Second Box: Login form */}
+      <Box
+        sx={{
+          width: '50%',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          mt: 4,
+          justifyContent: 'center',
+          p: 15, // Add some padding
+          backgroundColor: 'white', // Optional: set a background color if needed
         }}
       >
         <Box
@@ -93,7 +120,7 @@ const Login: React.FC = () => {
             width: '100%',
           }}
         >
-          <Box sx={{ display: 'flex', width: '100%', mb: 2 }}>
+          <Box sx={{ display: 'flex', mb: 2 , width: '100%'}}>
             <Image
               src='/logo/book.png'
               width={60}
@@ -163,7 +190,7 @@ const Login: React.FC = () => {
         </Box>
       </Box>
       <Notification />
-    </Container>
+    </Box>
   );
 };
 
