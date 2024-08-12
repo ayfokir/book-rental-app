@@ -1,43 +1,150 @@
-import React, { useState } from 'react';
-import { Box, TextField, Typography, MenuItem, Button, Grid, Modal, Fade } from '@mui/material';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
 
-const books = ['Book1', 'Book2', 'Book3', 'Add'];
-const categories = ['Fiction', 'Business', 'Self Help'];
+import React, { useState, FormEvent, ChangeEvent, useEffect } from 'react';
+import { Box, TextField, Typography, MenuItem, Button, Grid, FormHelperText } from '@mui/material';
+// import { useNotification } from '@/context/NotificationContext';
+import { useFormStatus } from 'react-dom';
+import { useRouter } from "next/navigation";
+// import { UploadBook } from '@/app/api/upload-book/UploadBook';
+import { ReadBooks } from '@/app/api/read-books/ReadBooks';
+import { useAuth } from '@/context/AuthContext';
+import UploadOutlinedIcon from '@mui/icons-material/UploadOutlined';
+import AddBook from './AddBook';
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store/Store"; // Adjust the import according to your store setup
+import { addBookStart } from '@/redux/slices/BookUpload';
+interface Book {
+  book_id: number;
+  book_name: string;
+  author_name: string;
+  category: string;
+}
+
+interface FormData {
+  selectedBook: string;
+  quantity: string;
+  price: string;
+  bookCover: File | null;
+}
 
 const Upload: React.FC = () => {
-  const [selectedBook, setSelectedBook] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [rentPrice, setRentPrice] = useState('');
+  const [formData, setFormData] = useState<FormData>({
+    selectedBook: '',
+    quantity: '',
+    price: '',
+    bookCover: null,
+  });
   const [openModal, setOpenModal] = useState(false);
-  const [newBookName, setNewBookName] = useState('');
-  const [authorName, setAuthorName] = useState('');
-  const [category, setCategory] = useState('');
+  const [books, setBooks] = useState<Book[]>([]);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const { pending } = useFormStatus();
+  // const { setNotification } = useNotification();
+    const {error, success, message, loading} = useSelector( (state: RootState) => state.books);
+    
+  const router = useRouter();
+  const { userId } = useAuth();
+  const dispatch = useDispatch();
 
-  const handleBookChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  console.log("see user Id:", userId);
+
+  useEffect(() => {
+    const ReadAllBooks = async () => {
+      const fetchedBooks = await ReadBooks();
+      console.log("see books:", fetchedBooks);
+            // Always include the "Add" option
+            const booksWithAddOption = (fetchedBooks.books ?? [])?.concat({
+              book_id: -1, // Use a unique identifier for the "Add" option
+              book_name: 'Add',
+              author_name: '',
+              category: ''
+            });
+        setBooks(booksWithAddOption);
+    };
+    ReadAllBooks();
+  }, [openModal]);
+  
+  useEffect(()  => {
+  if(success){
+    setFormData((prev) => ({
+      ...prev, 
+      selectedBook: '',
+      quantity: '',
+      price: '',
+      bookCover: null,
+    }))
+  }
+  },[success, message])
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!formData.bookCover) newErrors.bookCover = 'Book Cover is required';
+    if (!formData.price) newErrors.price = 'Price is required';
+    if (!formData.quantity) newErrors.quantity = 'Quantity is required';
+    if (!formData.selectedBook) newErrors.selectedBook = 'Book is required';
+
+    return newErrors;
+  };
+
+  const handleFormDataChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value, files } = e.target;
+    if (name === 'bookCover' && files) {
+      setFormData(prevState => ({
+        ...prevState,
+        bookCover: files[0],
+      }));
+    } else {
+      setFormData(prevState => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+    setErrors(prevState => ({
+      ...prevState,
+      [name]: '',
+    }));
+  };
+
+  const handleBookChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.value === 'Add') {
       setOpenModal(true);
     } else {
-      setSelectedBook(event.target.value);
+      setFormData(prevState => ({
+        ...prevState,
+        selectedBook: event.target.value,
+      }));
     }
-  };
-
-  const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuantity(event.target.value);
-  };
-
-  const handleRentPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRentPrice(event.target.value);
   };
 
   const handleModalClose = () => {
     setOpenModal(false);
   };
 
-  const handleModalSubmit = () => {
-    // Add logic to save the new book to the books array here
-    setOpenModal(false);
-    setSelectedBook(newBookName);
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formErrors = validateForm();
+    console.log("see error:", formErrors)
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
+      return;
+    }
+    // setNotification({ status: 'none', message: '' });
+    const formData = new FormData(e.currentTarget);
+    // Add additional values to the FormData object
+    const book = books.filter((book) => book.book_name === formData.get("selectedBook") )
+    console.log("see book", book[0].book_id)
+    const book_ref_id = book[0].book_id
+  formData.append('owner_id', `${userId}`); // Replace '12345' with the actual user_id
+  formData.append('status', `free`); // Replace '12345' with the actual user_id
+  formData.append('book_ref_id', `${book_ref_id}`); // Replace '67890' with the actual book_id
+ // Handle the file input
+ const bookCover = formData.get('bookCover');
+ if (bookCover) {
+   formData.append('book_cover', bookCover); // Add the file to FormData
+ } else {
+   console.error('No file selected for book cover');
+ }    console.log("see the The book Data:", formData);
+    // const result = await UploadBook(formData);
+    const result = dispatch(addBookStart(formData));    
   };
 
   return (
@@ -45,120 +152,83 @@ const Upload: React.FC = () => {
       <Typography variant="h5" gutterBottom sx={{ textAlign: "center", mb: 4 }}>
         Upload New Book
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-        <TextField
-          select
-          label="Select Book"
-          value={selectedBook}
-          onChange={handleBookChange}
-          fullWidth
-          sx={{ width: '50%', maxWidth: 400 }} // Adjusted width
-        >
-          {books.map((book, index) => (
-            <MenuItem key={book} value={book} sx={{ color: index === 3 ? "#00ABFF" : "inherit" }}>
-              {book}
-            </MenuItem>
-          ))}
-        </TextField>
-      </Box>
-      <Grid container spacing={10} sx={{paddingTop: "70px", paddingBottom: "20px"}}>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Book Quantity"
-            value={quantity}
-            onChange={handleQuantityChange}
-            fullWidth
-            type='number'
-            sx={{ height: '40px' }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Rent Price for 2 Weeks"
-            value={rentPrice}
-            onChange={handleRentPriceChange}
-            fullWidth
-            type='number'
-            sx={{ height: '40px' }}
-          />
-        </Grid>
-      </Grid>
-      <Box display={"flex"} flexDirection={"column"} sx={{ mt: 2 }}>
-        <Button
-          component="label"
-          sx={{ color: "rgb(0,171,255)", py: "10px", display: 'flex', alignItems: 'center' }}
-        >
-          <UploadFileIcon sx={{ mr: 1, marginTop: "10px" }} />
-          Upload Book Cover
-          <input type="file" hidden />
-        </Button>
-        <Button
-          variant="contained"
-          sx={{ px: "60px", py: "12px", marginTop: "20px", width: 'fit-content', alignSelf: 'center', color: "00ABFF" }}
-        >
-          Submit
-        </Button>
-      </Box>
 
-      {/* Modal for adding a new book */}
-      <Modal
-        open={openModal}
-        onClose={handleModalClose}
-        closeAfterTransition
-      >
-        <Fade in={openModal}>
-          <Box sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 400,
-            bgcolor: 'background.paper',
-            boxShadow: 24,
-            p: 4,
-          }}>
-            <Typography variant="h6" gutterBottom>
-              Add New Book
-            </Typography>
+      <Box component="form" onSubmit={handleSubmit}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+          <TextField
+            select
+            label="Select Book"
+            name="selectedBook"
+            value={formData.selectedBook}
+            onChange={handleBookChange}
+            fullWidth
+            sx={{ width: '50%', maxWidth: 400 }}
+            error={Boolean(errors.selectedBook)}
+            helperText={errors.selectedBook}
+          >
+            {books?.map((book) => (
+              <MenuItem key={book.book_id} value={book.book_name} sx={{ color: book.book_name === 'Add' ? "#00ABFF" : "inherit" }}>
+                {book.book_name}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Box>
+        <Grid container spacing={10} sx={{ paddingTop: "70px", paddingBottom: "20px" }}>
+          <Grid item xs={12} sm={6}>
             <TextField
-              label="Book Name"
-              value={newBookName}
-              onChange={(e) => setNewBookName(e.target.value)}
+              label="Book Quantity"
+              name="quantity"
+              value={formData.quantity}
+              onChange={handleFormDataChange}
               fullWidth
-              margin="normal"
+              type='number'
+              sx={{ height: '40px' }}
+              error={Boolean(errors.quantity)}
+              helperText={errors.quantity}
             />
+          </Grid>
+          <Grid item xs={12} sm={6}>
             <TextField
-              label="Author Name"
-              value={authorName}
-              onChange={(e) => setAuthorName(e.target.value)}
+              label="Rent Price for 2 Weeks"
+              name="price"
+              value={formData.price}
+              onChange={handleFormDataChange}
               fullWidth
-              margin="normal"
+              type='number'
+              sx={{ height: '40px' }}
+              error={Boolean(errors.price)}
+              helperText={errors.price}
             />
-            <TextField
-              select
-              label="Category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              fullWidth
-              margin="normal"
-            >
-              {categories.map((cat) => (
-                <MenuItem key={cat} value={cat}>
-                  {cat}
-                </MenuItem>
-              ))}
-            </TextField>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleModalSubmit}
-              sx={{ mt: 2 }}
-            >
-              Save
-            </Button>
-          </Box>
-        </Fade>
-      </Modal>
+          </Grid>
+        </Grid>
+        <Box display={"flex"} flexDirection={"column"} sx={{ mt: 2 }}>
+          <Button
+            component="label"
+            startIcon={<UploadOutlinedIcon />}
+            sx={{ color: 'primary.main', textTransform: 'none', fontSize: '1rem' }}
+          >
+            <Typography sx={{ fontSize: "12px", my:"20px" }}>Upload Book Cover</Typography>
+            <input
+              type="file"
+              name="bookCover"
+              hidden
+              onChange={handleFormDataChange}
+            />
+             {errors.bookCover && (
+        <FormHelperText error sx={{ml: "9px"}}>{errors.bookCover}</FormHelperText>
+      )}
+          </Button>
+          <Button
+            type="submit"
+            disabled={pending}
+            variant="contained"
+            sx={{ px: "80px", py: "14px", marginTop: "20px", width: 'fit-content', alignSelf: 'center', color: "00ABFF", borderRadius: "10x" }}
+          >
+              {pending ? 'Submitting...' : 'Submit'}
+          </Button>
+        </Box>
+      </Box>
+      <AddBook open={openModal} onClose={handleModalClose} />
     </Box>
   );
 };

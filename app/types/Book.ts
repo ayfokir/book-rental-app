@@ -1,8 +1,22 @@
 // src/interfaces/Book.ts
 export interface Book {
-    title: string;
-    image: string;
-    description: string;
-    rental_price: string ;
-    rating: string;
+    book_id: string
+    book_no: string;
+    book_name?: string;
+    author_name?: string
+    category?:  string
+    status: string;
+    price: string ;
+    owner:  string;
   }
+export interface Owner {
+  owner_id: string;
+  quantity: string;
+  location: string;
+  status: string;
+  price: string;
+  owner: string;
+}
+
+  
+

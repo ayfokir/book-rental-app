@@ -1,10 +1,12 @@
 import { all } from 'redux-saga/effects';
-import watcherSaga from '../sagas/Saga';
+import bookUploadSaga from './BookUpload';
+import bookSaga from './AddBook';
 // import dataSaga from './dataSaga';
 
 export default function* rootSaga() {
     yield all([
-        watcherSaga(),
+        bookUploadSaga(),
+        bookSaga()
         // dataSaga(),
         // Add other sagas here
     ]);

@@ -16,18 +16,21 @@ interface MenuItem {
   color: string;
   link: string
 }
+interface SideBarProps {
+  isFullHeight: boolean; // Prop for dynamic height
+}
 
-const SideBar: React.FC = () => {
+const SideBar: React.FC<SideBarProps> = ({ isFullHeight }) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const menuItems: MenuItem[] = [
-    { text: 'Dashboard', icon: <DashboardIcon />, color: 'rgba(255, 255, 255, 0.8)', link: "/upload" },
-    { text: 'Books', icon: <BookIcon />, color: 'rgba(255, 255, 255, 0.8)', link: "/upload" },
+    { text: 'Dashboard', icon: <DashboardIcon />, color: 'rgba(255, 255, 255, 0.8)', link: "/dashboard" },
+    { text: 'Books', icon: <BookIcon />, color: 'rgba(255, 255, 255, 0.8)', link: "/books" },
     { text: 'Book Upload', icon: <UploadIcon />, color: 'rgba(255, 255, 255, 0.8)' , link: "/upload"},
-    { text: 'Owners', icon: <PeopleIcon />, color: 'rgba(255, 255, 255, 0.8)', link: "/upload" },
+    { text: 'Owners', icon: <PeopleIcon />, color: 'rgba(255, 255, 255, 0.8)', link: "/owners" },
     { text: 'Renters', icon: <PeopleIcon />, color: 'rgba(255, 255, 255, 0.8)', link: "/upload" },
     { text: 'Notification', icon: <NotificationsIcon />, color: 'rgba(255, 255, 255, 0.8)' , link: "/upload"},
-    { text: 'Settings', icon: <SettingsIcon />, color: 'rgba(255, 255, 255, 0.8)' , link: "/upload"},
+    { text: 'Settings', icon: <SettingsIcon />, color: 'rgba(255, 255, 255, 0.8)' , link: "/settings"},
     // { text: 'Logout', icon: <ExitToAppIcon />, color: 'rgba(255, 255, 255, 0.8)' },
   ];
   
@@ -43,7 +46,7 @@ const SideBar: React.FC = () => {
       sx={{
      // Adjust width as needed
         backgroundColor: 'rgb(23,27,54)', // Set the background color
-        height: '116vh', // Full height
+        height: isFullHeight ? '125vh' : '100vh', // Use state to determine height
         display: 'flex',
         flexDirection: 'column',
         margin: '24px', // Add margin for spacing around the parent component
