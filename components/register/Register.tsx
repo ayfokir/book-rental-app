@@ -1,12 +1,22 @@
-'use client';
-import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { Box, TextField, Button, Checkbox, FormControlLabel, Typography, Link, Container, Divider } from '@mui/material';
-import Image from 'next/image';
-import { useFormStatus } from 'react-dom';
-import { RegisterUser } from '@/app/api/register/RegisterUser';
-import { useNotification } from '@/context/NotificationContext';
-import { Notification } from '../notification/Notification';
-
+"use client";
+import React, { useState, ChangeEvent, FormEvent } from "react";
+import {
+  Box,
+  TextField,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  Typography,
+  Link,
+  Container,
+  Divider,
+} from "@mui/material";
+import Image from "next/image";
+import { useFormStatus } from "react-dom";
+import { RegisterUser } from "@/app/api/register/RegisterUser";
+import { useNotification } from "@/context/NotificationContext";
+import { Notification } from "../notification/LoginNotification";
+import { useRouter } from "next/navigation";
 interface UserData {
   email: string;
   password: string;
@@ -24,6 +34,7 @@ const Register: React.FC = () => {
     phone: "",
   });
 
+  const router = useRouter();
   const [termsAccepted, setTermsAccepted] = useState<boolean>(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { pending } = useFormStatus();
@@ -31,36 +42,38 @@ const Register: React.FC = () => {
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = e.target;
-    if (name === 'terms') {
-      setTermsAccepted(checked); 
+    if (name === "terms") {
+      setTermsAccepted(checked);
     } else {
-      setUserData(prevState => ({
+      setUserData((prevState) => ({
         ...prevState,
-        [name]: value, 
+        [name]: value,
       }));
     }
-    // Clear the error for the field that is being edited 
-    setErrors(prevState => ({
+    // Clear the error for the field that is being edited
+    setErrors((prevState) => ({
       ...prevState,
-      [name]: '',
+      [name]: "",
     }));
   };
-  
+
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!userData.email) newErrors.email = 'Email is required';
-    if (!userData.password) newErrors.password = 'Password is required';
-    if (userData.password !== userData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
-    if (!userData.location) newErrors.location = 'Location is required';
-    if (!userData.phone) newErrors.phone = 'Phone number is required';
+    if (!userData.email) newErrors.email = "Email is required";
+    if (!userData.password) newErrors.password = "Password is required";
+    if (userData.password !== userData.confirmPassword)
+      newErrors.confirmPassword = "Passwords do not match";
+    if (!userData.location) newErrors.location = "Location is required";
+    if (!userData.phone) newErrors.phone = "Phone number is required";
 
     // Regex validation for phone number
     if (userData.phone && !/^\d+$/.test(userData.phone)) {
-      newErrors.phone = 'Phone number must contain only digits';
+      newErrors.phone = "Phone number must contain only digits";
     }
 
-    if (!termsAccepted) newErrors.terms = 'You must accept the Terms and Conditions';
+    if (!termsAccepted)
+      newErrors.terms = "You must accept the Terms and Conditions";
 
     return newErrors;
   };
@@ -74,90 +87,92 @@ const Register: React.FC = () => {
       setErrors(formErrors);
       return; // Stop submission if there are validation errors
     }
-    
+
     // Reset the notification state
-    setNotification({ status: 'none', message: '' });
+    setNotification({ status: "none", message: "" });
 
     const formData = new FormData(e.currentTarget);
     const result = await RegisterUser(formData);
     console.log(result);
     if (result.success) {
       setNotification({
-        status: 'success',
-        message: result.message || 'User successfully Registered.',
+        status: "success",
+        message: result.message || "User successfully Registered.",
       });
+      router.push("/login");
     } else {
       setNotification({
-        status: 'error',
-        message: result.error as string || 'User Registration failed.',
+        status: "error",
+        message: (result.error as string) || "User Registration failed.",
       });
     }
   };
 
   return (
-    <Box sx={{ display: 'flex', width: '100%', height: '100vh' }}>
+    <Box sx={{ display: "flex", width: "100%", height: "100vh" }}>
       {/* Left Box: Image centered */}
       <Box
         sx={{
-          width: '50%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: 'rgb(23,27,54)',
+          width: "50%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgb(23,27,54)",
         }}
       >
-        <Image
-          src='/logo/book.png'
-          width={200}
-          height={200}
-          alt='Logo'
-        />
+        <Image src="/logo/book.png" width={200} height={200} alt="Logo" />
       </Box>
 
       {/* Right Box: Registration form */}
       <Box
         sx={{
-          width: '50%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
+          width: "50%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
           p: 15, // Add some padding
-        overflowY: 'auto', // Allow vertical scrolling if content overflows
-          backgroundColor: 'white', // Optional: set a background color if needed
+          overflowY: "auto", // Allow vertical scrolling if content overflows
+          backgroundColor: "white", // Optional: set a background color if needed
         }}
       >
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
           }}
         >
-          <Box sx={{ display: 'flex', width: '100%', mb: 2,     overflow: 'hidden',  // Ensure no content gets clipped
-           }}>
-            <Image
-              src='/logo/book.png'
-              width={60}
-              height={40}
-              alt='Logo'
-            />
+          <Box
+            sx={{
+              display: "flex",
+              width: "100%",
+              mb: 2,
+              overflow: "hidden", // Ensure no content gets clipped
+            }}
+          >
+            <Image src="/logo/book.png" width={60} height={40} alt="Logo" />
             <Typography variant="h4" component="h1" gutterBottom sx={{ ml: 2 }}>
               Book Rent
             </Typography>
           </Box>
-          <Typography variant="h6" component="h2" gutterBottom sx={{ width: '100%' }}>
+          <Typography
+            variant="h6"
+            component="h2"
+            gutterBottom
+            sx={{ width: "100%" }}
+          >
             Signup into Book Rent
           </Typography>
-          <Divider sx={{ width: '100%', mb: 2 }} />
+          <Divider sx={{ width: "100%", mb: 2 }} />
         </Box>
         <Box
           component="form"
           onSubmit={handleSubmit}
           sx={{
             mt: 1,
-            width: '100%',
+            width: "100%",
           }}
         >
           <TextField
@@ -250,10 +265,10 @@ const Register: React.FC = () => {
             sx={{ mt: 3, mb: 2 }}
             disabled={pending}
           >
-            {pending ? 'Submitting...' : 'Sign Up'}
+            {pending ? "Submitting..." : "Sign Up"}
           </Button>
           <Typography variant="body2" color="textSecondary" align="center">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <Link href="/login" variant="body2">
               Login
             </Link>

@@ -35,7 +35,7 @@ export async function LoginUser(formData: FormData) {
       // Handle validation errors
       const messages = error.errors.map(err => err.message).join(', ');
       return {
-        errors: messages,
+        error: messages,
         success: false,
       };
     }
@@ -84,7 +84,7 @@ export async function LoginUser(formData: FormData) {
     console.log(token)
     // Return success if the login is valid
     return {
-      message: 'Login successful',
+      message: 'Logged in successfully',
       token, // Include the token in the response if needed
       // user,
       success: true,

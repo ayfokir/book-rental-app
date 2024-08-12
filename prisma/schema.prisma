@@ -12,226 +12,94 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-
-
-
-// model User {
-//   user_id        Int       @id @default(autoincrement())
-//   email          String    @unique
-//   password       String
-//   role           Role
-//   phone_number   String
-//   location        String
-//   created_at     DateTime  @default(now())
-//   updated_at     DateTime  @updatedAt
-//   Books          Book[]    @relation("BookOwner")
-//   Rentals        Rental[]  @relation("RenterRentals")
-//   Reviews        Review[]
-//   TransactionsAsRenter  Transaction[] @relation("RenterTransactions")
-//   TransactionsAsOwner   Transaction[] @relation("OwnerTransactions")
-//   AdminActivitiesAsAdmin AdminActivity[] @relation("AdminActions")
-//   AdminActivitiesAsTargetUser AdminActivity[] @relation("TargetUserActions")
-// }
-
-// model Book {
-//   book_id      Int      @id @default(autoincrement())
-//   owner_id     Int
-//   owner        User     @relation(fields: [owner_id], references: [user_id], name: "BookOwner")
-//   title        String
-//   author       String
-//   category      String
-//   description  String
-//   rental_price Float
-//   book_no  Int
-//   quantity   Int
-//   status       BookStatus
-//   created_at   DateTime @default(now())
-//   updated_at   DateTime @updatedAt
-//   Rentals      Rental[]
-//   AdminActivities AdminActivity[] @relation("TargetBookActions")
-// }
-
-// model Rental {
-//   rental_id     Int      @id @default(autoincrement())
-//   book_id       Int
-//   book          Book     @relation(fields: [book_id], references: [book_id])
-//   renter_id     Int
-//   renter        User     @relation(fields: [renter_id], references: [user_id], name: "RenterRentals")
-//   rental_start  DateTime
-//   rental_end    DateTime
-//   status        RentalStatus
-//   created_at    DateTime @default(now())
-//   updated_at    DateTime @updatedAt
-//   Reviews       Review[]
-//   Transactions  Transaction[]
-// }
-
-// model Review {
-//   review_id     Int      @id @default(autoincrement())
-//   rental_id     Int
-//   rental        Rental   @relation(fields: [rental_id], references: [rental_id])
-//   renter_id     Int
-//   renter        User     @relation(fields: [renter_id], references: [user_id])
-//   rating        Int
-//   comment       String
-//     status        ReviewStatus
-//   created_at    DateTime @default(now())
-//   updated_at    DateTime @updatedAt
-// }
-
-// model Transaction {
-//   transaction_id Int       @id @default(autoincrement())
-//   rental_id      Int
-//   rental         Rental    @relation(fields: [rental_id], references: [rental_id])
-//   renter_id      Int
-//   renter         User      @relation(fields: [renter_id], references: [user_id], name: "RenterTransactions")
-//   owner_id       Int
-//   owner          User      @relation(fields: [owner_id], references: [user_id], name: "OwnerTransactions")
-//   amount         Float
-//   status         TransactionStatus
-//   created_at     DateTime  @default(now())
-//   updated_at     DateTime  @updatedAt
-// }
-
-// model AdminActivity {
-//   activity_id     Int      @id @default(autoincrement())
-//   admin_id        Int
-//   admin           User     @relation(fields: [admin_id], references: [user_id], name: "AdminActions")
-//   action          String
-//   target_user_id  Int?     
-//   target_user     User?    @relation(fields: [target_user_id], references: [user_id], name: "TargetUserActions")
-//   target_book_id  Int?     
-//   target_book     Book?    @relation(fields: [target_book_id], references: [book_id], name: "TargetBookActions")
-//   details         String
-//   created_at      DateTime @default(now())
-// }
-
-// enum Role {
-//   renter
-//   owner
-//   admin
-// }
-
-// enum BookStatus {
-//   free
-//   rented
-//   unavailable
-// }
-
-// enum RentalStatus {
-//   ongoing
-//   completed
-//   cancelled
-// }
-
-// enum TransactionStatus {
-//   pending
-//   completed
-//   failed
-// }
-
-// enum ReviewStatus {
-//   pending
-//   approved
-//   rejected
-// }
-
-
 model User {
-  user_id        Int       @id @default(autoincrement())
-  email          String    @unique
-  password       String
-  role           Role
-  phone_number   String
-  location       String
-  created_at     DateTime  @default(now())
-  updated_at     DateTime  @updatedAt
-  Books          BookUploaded[]    @relation("BookOwner")
-  Rentals        Rental[]  @relation("RenterRentals")
-  TransactionsAsRenter  Transaction[] @relation("RenterTransactions")
-  TransactionsAsOwner   Transaction[] @relation("OwnerTransactions")
-  AdminActivitiesAsAdmin AdminActivity[] @relation("AdminActions")
+  user_id               Int                @id @default(autoincrement())
+  email                 String             @unique
+  password              String
+  role                  Role
+  phone_number          String
+  location              String
+  created_at            DateTime           @default(now())
+  updated_at            DateTime           @updatedAt
+  Books                 BookUploaded[]     @relation("BookOwner")
+  Rentals               Rental[]           @relation("RenterRentals")
+  TransactionsAsRenter  Transaction[]      @relation("RenterTransactions")
+  TransactionsAsOwner   Transaction[]      @relation("OwnerTransactions")
+  AdminActivitiesAsAdmin AdminActivity[]  @relation("AdminActions")
   AdminActivitiesAsTargetUser AdminActivity[] @relation("TargetUserActions")
 }
 
 model Book {
-  book_id        Int       @id @default(autoincrement())
-  book_name       String
-  author_name     String 
-  author         String
-  category       Category 
+  book_id        Int            @id @default(autoincrement())
+  book_name      String
+  author_name    String 
+  category       String
+  BookUploaded   BookUploaded[] @relation("BookRelation")
 }
 
-
 model BookUploaded {
-  book_id        Int       @id @default(autoincrement())
+  book_id        Int            @id @default(autoincrement())
+  book_ref_id    Int            // Foreign key for Book
   owner_id       Int
-  owner          User      @relation(fields: [owner_id], references: [user_id], name: "BookOwner")
-  book_name       String
-  author_name     String 
-  author         String
-  category       String 
-  price   Float
+  owner          User           @relation(fields: [owner_id], references: [user_id], name: "BookOwner")
+  book_cover     String
+  price          Float
   book_no        Int
   quantity       Int
   status         BookStatus
-  created_at     DateTime  @default(now())
-  updated_at     DateTime  @updatedAt
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
   Rentals        Rental[]
   AdminActivities AdminActivity[] @relation("TargetBookActions")
+  book          Book          @relation(fields: [book_ref_id], references: [book_id], name: "BookRelation")
 }
 
 model Rental {
-  rental_id     Int      @id @default(autoincrement())
+  rental_id     Int         @id @default(autoincrement())
   book_id       Int
-  book          BookUploaded     @relation(fields: [book_id], references: [book_id])
+  book          BookUploaded @relation(fields: [book_id], references: [book_id])
   renter_id     Int
-  renter        User     @relation(fields: [renter_id], references: [user_id], name: "RenterRentals")
+  renter        User        @relation(fields: [renter_id], references: [user_id], name: "RenterRentals")
   rental_start  DateTime
   rental_end    DateTime
   status        RentalStatus
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
   Transactions  Transaction[]
 }
 
-
-
 model Transaction {
-  transaction_id Int       @id @default(autoincrement())
+  transaction_id Int           @id @default(autoincrement())
   rental_id      Int
-  rental         Rental    @relation(fields: [rental_id], references: [rental_id])
+  rental         Rental        @relation(fields: [rental_id], references: [rental_id])
   renter_id      Int
-  renter         User      @relation(fields: [renter_id], references: [user_id], name: "RenterTransactions")
+  renter         User          @relation(fields: [renter_id], references: [user_id], name: "RenterTransactions")
   owner_id       Int
-  owner          User      @relation(fields: [owner_id], references: [user_id], name: "OwnerTransactions")
+  owner          User          @relation(fields: [owner_id], references: [user_id], name: "OwnerTransactions")
   amount         Float
   status         TransactionStatus
-  created_at     DateTime  @default(now())
-  updated_at     DateTime  @updatedAt
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @updatedAt
 }
 
 model AdminActivity {
-  activity_id     Int      @id @default(autoincrement())
+  activity_id     Int            @id @default(autoincrement())
   admin_id        Int
-  admin           User     @relation(fields: [admin_id], references: [user_id], name: "AdminActions")
+  admin           User           @relation(fields: [admin_id], references: [user_id], name: "AdminActions")
   action          String
-  target_user_id  Int?     
-  target_user     User?    @relation(fields: [target_user_id], references: [user_id], name: "TargetUserActions")
-  target_book_id  Int?     
-  target_book     BookUploaded?    @relation(fields: [target_book_id], references: [book_id], name: "TargetBookActions")
+  target_user_id  Int?           
+  target_user     User?          @relation(fields: [target_user_id], references: [user_id], name: "TargetUserActions")
+  target_book_id  Int?           
+  target_book     BookUploaded?  @relation(fields: [target_book_id], references: [book_id], name: "TargetBookActions")
   details         String
-  created_at      DateTime @default(now())
+  created_at      DateTime       @default(now())
 }
 
-
-
-enum Category {
-    Fiction
-    SelfHelp
-    Business
-}
+// enum Category {
+//   Fiction
+//   SelfHelp
+//   Business
+// }
 
 enum Role {
   renter
@@ -256,5 +124,3 @@ enum TransactionStatus {
   completed
   failed
 }
-
-

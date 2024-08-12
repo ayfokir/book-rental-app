@@ -1,30 +1,35 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
-import SideBar from "./sideBar/SideBar";
-import IncomeCard from "./income-card/IncomeCard";
-import BookTable from "./table/BookTable";
-import EarningSummary from "./earning-summary/EarningSummary";
-import Header from "./header/Header";
+import SideBar from "@/components/dashboard/sideBar/SideBar";
+import Header from "@/components/dashboard/header/Header";
 import { useRouter } from "next/navigation";
 import getAuth from "@/app/util/Auth";
+import BookTable from "../table/BookTable";
 import { MRT_ColumnDef } from "material-react-table";
 import { Book } from "@/app/types/Book";
-const Dashboard: React.FC = () => {
+
+const Books: React.FC = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const KnowCustomer = async () => {
       const customer = await getAuth();
       if (!customer.token) {
         router.push("/login");
       } else {
-        // setLoading(false);
+        setLoading(false);
       }
     };
     KnowCustomer;
   }, []);
+
+  // if (loading) {
+  //   // Optionally render a loading spinner or message while checking auth
+  //   return <div>Loading...</div>;
+  // }
 
   const data = [
     {
@@ -33,6 +38,27 @@ const Dashboard: React.FC = () => {
       owner: "Nardos T",
       status: "Rented",
       price: "40 Birr",
+    },
+    {
+      book_id: "2",
+      book_no: "5665",
+      owner: "Harry M",
+      status: "Free",
+      price: "0.0 Birr",
+    },
+    {
+      book_id: "2",
+      book_no: "5665",
+      owner: "Harry M",
+      status: "Free",
+      price: "0.0 Birr",
+    },
+    {
+      book_id: "2",
+      book_no: "5665",
+      owner: "Harry M",
+      status: "Free",
+      price: "0.0 Birr",
     },
     {
       book_id: "2",
@@ -130,7 +156,7 @@ const Dashboard: React.FC = () => {
     >
       {/* Sidebar */}
       <Box sx={{ width: isSmallScreen ? "100%" : "20%" }}>
-        <SideBar isFullHeight={true} />
+        <SideBar isFullHeight={false} />{" "}
       </Box>
       {/* Main content */}
       <Box
@@ -143,31 +169,12 @@ const Dashboard: React.FC = () => {
         }}
       >
         <Header />
-        <Grid container spacing={3}>
-          <Grid
-            item
-            xs={12}
-            md={6}
-            lg={4}
-            sx={{ display: "flex", flexDirection: "column" }}
-          >
-            <IncomeCard />
-          </Grid>
-
-          <Grid
-            item
-            xs={12}
-            md={6}
-            lg={8}
-            sx={{ display: "flex", flexDirection: "column", gap: 3 }}
-          >
-            <BookTable data={data} columns={columns} height="300px" />
-            <EarningSummary />
-          </Grid>
-        </Grid>
+        <Box display={"flex"} justifyContent={"center"}>
+          <BookTable data={data} columns={columns} height="528px" />
+        </Box>
       </Box>
     </Box>
   );
 };
 
-export default Dashboard;
+export default Books;

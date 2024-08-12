@@ -38,7 +38,7 @@ const BookUpload: React.FC = () => {
     >
       {/* Sidebar */}
       <Box sx={{ width: isSmallScreen ? "100%" : "20%" }}>
-        <SideBar />
+      <SideBar isFullHeight={false} /> 
       </Box>
 
       {/* Main content */}
@@ -52,7 +52,7 @@ const BookUpload: React.FC = () => {
         }}
       >
         <Header />
-        <Box display={"flex"} justifyContent={"center"}  sx={{backgroundColor: "white", marginTop: "24px", height: "104vh"}}>
+        <Box display={"flex"} justifyContent={"center"}  sx={{backgroundColor: "white", marginTop: "24px", height: "88vh"}}>
           
             <UploadForm />
           </Box>
