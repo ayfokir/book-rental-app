@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
 import SideBar from "@/components/dashboard/sideBar/SideBar";
 import Header from "@/components/dashboard/header/Header";
@@ -8,11 +8,35 @@ import getAuth from "@/app/util/Auth";
 import OwnerTable from "../table/OwnerTable";
 import { MRT_ColumnDef } from "material-react-table";
 import { Owner } from "@/app/types/Book";
+import { RootState } from "@/redux/store/Store";
+import { fetchUsersStart } from "@/redux/slices/User";
+import { useSelector, useDispatch } from "react-redux";
 const Owners: React.FC = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const dispatch   = useDispatch()
+  const users  =  useSelector((state: RootState)  => state.users.users)
+  console.log("inside Owner page:", users)
+
+
+  const formattedUsers = users.map((user, index) => {
+    // Generate a sequential book_id starting from "01"
+    const user_id = (index + 1).toString().padStart(2, '0');
+    console.log("users", users)
+    return {
+      owner_id: user_id,
+      owner: user.email,
+      location: user.location,
+      upload: user.Books.length
+    };
+  });
+  console.log("formattedUsers",formattedUsers)
+
+
+
+
   useEffect(() => {
     const KnowCustomer = async () => {
       const customer = await getAuth();
@@ -23,96 +47,13 @@ const Owners: React.FC = () => {
       }
     };
     KnowCustomer;
+    dispatch(fetchUsersStart())
   }, []);
 
   // if (loading) {
   //   // Optionally render a loading spinner or message while checking auth
   //   return <div>Loading...</div>;
   // }
-
-  const data: Owner[] = [
-    {
-      owner_id: "1",
-      quantity: "5",
-      location: "Aisle 3",
-      status: "Rented",
-      price: "40 Birr",
-      owner: "Nardos T",
-    },
-    {
-      owner_id: "2",
-      quantity: "10",
-      location: "Aisle 1",
-      status: "Free",
-      price: "0.0 Birr",
-      owner: "Harry M",
-    },
-    {
-      owner_id: "3",
-      quantity: "8",
-      location: "Aisle 4",
-      status: "Free",
-      price: "0.0 Birr",
-      owner: "Emily K",
-    },
-    {
-      owner_id: "3",
-      quantity: "8",
-      location: "Aisle 4",
-      status: "Free",
-      price: "0.0 Birr",
-      owner: "Emily K",
-    },
-    {
-      owner_id: "3",
-      quantity: "8",
-      location: "Aisle 4",
-      status: "Free",
-      price: "0.0 Birr",
-      owner: "Emily K",
-    },
-    {
-      owner_id: "3",
-      quantity: "8",
-      location: "Aisle 4",
-      status: "Free",
-      price: "0.0 Birr",
-      owner: "Emily K",
-    },
-    {
-      owner_id: "3",
-      quantity: "8",
-      location: "Aisle 4",
-      status: "Free",
-      price: "0.0 Birr",
-      owner: "Emily K",
-    },
-    {
-      owner_id: "3",
-      quantity: "8",
-      location: "Aisle 4",
-      status: "Free",
-      price: "0.0 Birr",
-      owner: "Emily K",
-    },
-    {
-      owner_id: "3",
-      quantity: "8",
-      location: "Aisle 4",
-      status: "Free",
-      price: "0.0 Birr",
-      owner: "Emily K",
-    },
-    {
-      owner_id: "3",
-      quantity: "8",
-      location: "Aisle 4",
-      status: "Free",
-      price: "0.0 Birr",
-      owner: "Emily K",
-    },
-    // Add more data as needed
-  ];
 
   const columns: MRT_ColumnDef<Owner>[] = [
     {
@@ -121,29 +62,19 @@ const Owners: React.FC = () => {
       size: 100,
     },
     {
-      accessorKey: "quantity",
-      header: "Quantity",
+      accessorKey: "owner",
+      header: "owner",
       size: 100,
+    },
+    {
+      accessorKey: "upload",
+      header: "Upload",
+      size: 150,
     },
     {
       accessorKey: "location",
       header: "Location",
       size: 150,
-    },
-    {
-      accessorKey: "status",
-      header: "Status",
-      size: 150,
-    },
-    {
-      accessorKey: "price",
-      header: "Price",
-      size: 150,
-    },
-    {
-      accessorKey: "owner",
-      header: "Owner",
-      size: 200,
     },
   ];
 
@@ -171,7 +102,7 @@ const Owners: React.FC = () => {
       >
         <Header />
         <Box display={"flex"} justifyContent={"center"}>
-          <OwnerTable data={data} columns={columns} height="528px" />
+          <OwnerTable data={formattedUsers} columns={columns} height="528px" />
         </Box>
       </Box>
     </Box>

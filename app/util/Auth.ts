@@ -12,14 +12,13 @@ const getAuth = async (): Promise<{ [key: string]: any }> => {
 
     // Parse the JSON string from local storage
     const user = JSON.parse(item);
-    console.log("Customer data:", user);
 
     // Decode the token payload
-    const decodedToken = decodeTokenPayload(user);
-    console.log("Decoded token:", decodedToken);
+    const decodedToken = decodeTokenPayload(user.token);
 
     // Attach the original token to the decoded token object
-    decodedToken.token = user;
+    decodedToken.token = user.token;
+    decodedToken.expiration = user.expiration;
 
     return decodedToken;
 

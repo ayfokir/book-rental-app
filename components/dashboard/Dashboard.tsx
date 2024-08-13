@@ -1,100 +1,67 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Grid, IconButton, useMediaQuery, useTheme } from "@mui/material";
 import SideBar from "./sideBar/SideBar";
 import IncomeCard from "./income-card/IncomeCard";
 import BookTable from "./table/BookTable";
 import EarningSummary from "./earning-summary/EarningSummary";
 import Header from "./header/Header";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from "next/navigation";
 import getAuth from "@/app/util/Auth";
 import { MRT_ColumnDef } from "material-react-table";
 import { Book } from "@/app/types/Book";
+import { UseSelector, UseDispatch } from "react-redux";
+import { RootState } from "@/redux/store/Store";
+import { fetchBooksStart } from "@/redux/slices/Book";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+
 const Dashboard: React.FC = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
+  const dispatch  = useDispatch()
+  const books =   useSelector((state:RootState) => state.books.books)
+  // Transform the fetched data into the desired format
+
+  const formattedBooks = books.map((book, index) => {
+    // Generate a sequential book_id starting from "01"
+    const book_id = (index + 1).toString().padStart(2, '0');
+    return {
+      id: book_id,
+      book_id: book.book_id,
+      book_no: book.book_no,
+      owner: book.owner.email,
+      status: book.status.charAt(0).toUpperCase() + book.status.slice(1), // Capitalize the status
+      price: `${book.price} Birr`,
+    };
+  });
+  // console.log("see books inside dashboard:", books.books)
   // const [loading, setLoading] = useState(true);
   useEffect(() => {
     const KnowCustomer = async () => {
-      const customer = await getAuth();
-      if (!customer.token) {
-        router.push("/login");
+      const customerDataString = await getAuth();
+      if (customerDataString.token) {
+        const currentTime = new Date().getTime();
+        if (currentTime > customerDataString.expiration) {
+          localStorage.removeItem("customer");
+          router.push("/login");
+        } else {
+          // Token is valid
+        }
       } else {
-        // setLoading(false);
+        // No customer data found
+        router.push("/login");
       }
     };
-    KnowCustomer;
-  }, []);
-
-  const data = [
-    {
-      book_id: "1",
-      book_no: "6485",
-      owner: "Nardos T",
-      status: "Rented",
-      price: "40 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    // Add more data as needed
-  ];
+    KnowCustomer(); // Call the function
+    dispatch(fetchBooksStart())
+  }, [router]);
+  
   const columns: MRT_ColumnDef<Book>[] = [
     {
-      accessorKey: "book_id",
+      accessorKey: "id",
       header: "No.",
       size: 100,
     },
@@ -106,7 +73,7 @@ const Dashboard: React.FC = () => {
     {
       accessorKey: "owner",
       header: "Owner",
-      size: 200,
+      size: 250,
     },
     {
       accessorKey: "status",
@@ -118,7 +85,34 @@ const Dashboard: React.FC = () => {
       header: "Price",
       size: 150,
     },
+    {
+    accessorKey: 'actions',
+    header: 'Action',
+    size: 100,
+    Cell: ({ row }) => (
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <IconButton onClick={() => handleEdit(row.original)}>
+          <EditIcon sx={{color: "black"}} />
+        </IconButton>
+        <IconButton onClick={() => handleDelete(row.original)}>
+          <DeleteIcon sx={{color: "red"}} />
+        </IconButton>
+      </div>
+    ),
+  }
   ];
+
+  const handleEdit = (book: Book) => {
+    // Handle edit action
+    router.push(`/upload/?id=${book.book_id}`)
+    console.log('Edit book:', book);
+  };
+
+  const handleDelete = (book: Book) => {
+    // Handle delete action
+    console.log('Delete book:', book);
+  };
+
 
   return (
     <Box
@@ -161,7 +155,7 @@ const Dashboard: React.FC = () => {
             lg={8}
             sx={{ display: "flex", flexDirection: "column", gap: 3 }}
           >
-            <BookTable data={data} columns={columns} height="300px" />
+            <BookTable data={formattedBooks} columns={columns} height="300px" />
             <EarningSummary />
           </Grid>
         </Grid>

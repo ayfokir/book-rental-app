@@ -8,12 +8,34 @@ import getAuth from "@/app/util/Auth";
 import BookTable from "../table/BookTable";
 import { MRT_ColumnDef } from "material-react-table";
 import { Book } from "@/app/types/Book";
-
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store/Store"; 
 const Books: React.FC = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const books =   useSelector((state:RootState) => state.books.books)
+  
+  
+  
+  const formattedBooks = books.map((book, index) => {
+    // Generate a sequential book_id starting from "01"
+    const book_id = (index + 1).toString().padStart(2, '0');
+
+    return {
+      book_id: book_id,
+      author_name: book.book.author_name,
+      owner: book.owner.email,
+      book_name: book.book.book_name,
+      category: book.book.category,
+      status: book.status.charAt(0).toUpperCase() + book.status.slice(1), // Capitalize the status
+      // price: `${book.price} Birr`,
+    };
+  });
+
+
+
   useEffect(() => {
     const KnowCustomer = async () => {
       const customer = await getAuth();
@@ -31,93 +53,6 @@ const Books: React.FC = () => {
   //   return <div>Loading...</div>;
   // }
 
-  const data = [
-    {
-      book_id: "1",
-      book_no: "6485",
-      owner: "Nardos T",
-      status: "Rented",
-      price: "40 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    {
-      book_id: "2",
-      book_no: "5665",
-      owner: "Harry M",
-      status: "Free",
-      price: "0.0 Birr",
-    },
-    // Add more data as needed
-  ];
   const columns: MRT_ColumnDef<Book>[] = [
     {
       accessorKey: "book_id",
@@ -125,8 +60,8 @@ const Books: React.FC = () => {
       size: 100,
     },
     {
-      accessorKey: "book_no",
-      header: "Book no.",
+      accessorKey: "author_name",
+      header: "Author",
       size: 150,
     },
     {
@@ -135,15 +70,21 @@ const Books: React.FC = () => {
       size: 200,
     },
     {
+      accessorKey: "category",
+      header: "Category",
+      size: 150,
+    },
+    {
       accessorKey: "status",
       header: "Status",
       size: 150,
     },
     {
-      accessorKey: "price",
-      header: "Price",
+      accessorKey: "book_name",
+      header: "Book Name",
       size: 150,
     },
+   
   ];
 
   return (
@@ -170,7 +111,7 @@ const Books: React.FC = () => {
       >
         <Header />
         <Box display={"flex"} justifyContent={"center"}>
-          <BookTable data={data} columns={columns} height="528px" />
+          <BookTable data={formattedBooks} columns={columns} height="528px" />
         </Box>
       </Box>
     </Box>

@@ -70,7 +70,16 @@ const Login: React.FC = () => {
     console.log("result:", result);
     if (result.success) {
       // Save token to local storage
-      localStorage.setItem("customer", JSON.stringify(result.token));
+      // localStorage.setItem("customer", JSON.stringify(result.token));
+            const token = result.token;
+            // const expirationTime = new Date().getTime() + (2 * 60 * 1000); // Set expiration time for 2 minutes from now
+            const expirationTime = new Date().getTime() + (24 * 60 * 60 * 1000); // Set expiration time for 24 hours from now
+              const customerData = {
+                token: token,
+                expiration: expirationTime
+              };
+              localStorage.setItem("customer", JSON.stringify(customerData));
+      
       setNotification({
         status: "success",
         message: result.message || "Logged in successfully",

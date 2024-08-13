@@ -8,7 +8,7 @@ import {
   type MRT_ColumnDef,
   type MRT_RowVirtualizer,
 } from 'material-react-table';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 
 // Define props interface
@@ -53,7 +53,8 @@ const OwnerTable: React.FC<OwnerTableProps> = ({ data, columns, height }) => {
   }, []);
 
   return (
-    <Box sx={{ paddingTop: '24px', width: "100%" }}>
+    <Box sx={{ marginTop: '24px', width: "100%", backgroundColor: "white" }}>
+      <Typography sx={{paddingTop: '40px', paddingLeft: "20px", paddingBottom: "6px"}}  fontWeight={"bold"} variant='h6'>List of Owner</Typography>
       <MaterialReactTable table={table} />
     </Box>
   );

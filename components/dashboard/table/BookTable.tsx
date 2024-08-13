@@ -126,15 +126,13 @@
 
 import React, { useMemo, useRef, UIEvent, useEffect } from 'react';
 import { Book } from '@/app/types/Book';
-import { Owner } from '@/app/types/Book';
-
 import {
   MaterialReactTable,
   useMaterialReactTable,
   type MRT_ColumnDef,
   type MRT_RowVirtualizer,
 } from 'material-react-table';
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 
 // Define props interface
@@ -179,7 +177,8 @@ const BookTable: React.FC<BookTableProps> = ({ data, columns, height }) => {
   }, []);
 
   return (
-    <Box sx={{ paddingTop: '24px', width: "100%" }}>
+    <Box sx={{ marginTop: '24px', width: "100%", backgroundColor: "white" }}>
+      <Typography sx={{paddingTop: '40px', paddingLeft: "20px", paddingBottom: "6px"}}  fontWeight={"bold"} variant='h6'>Live Book Status</Typography>
       <MaterialReactTable table={table} />
     </Box>
   );
