@@ -1,16 +1,26 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-// Define the Book interface
 export interface Book {
-  book_id?: string;
-  book_ref_id: string
-  owner_id: string;
-  book_cover: string;
-  price: string;
-  quantity: string;
-  status: string;
-  book_no: string;
-}
+    book_id: number; // Assuming book_id is a number
+    book_ref_id: number;
+    owner_id: number;
+    book_cover: string;
+    price: number; // Assuming price is a number
+    quantity: number; // Assuming quantity is a number
+    status: string;
+    book_no: string;
+    created_at: Date; // Or string, depending on how you handle dates
+    updated_at: Date; // Or string, depending on how you handle dates
+    owner: {
+    email: string;
+    role: string
+    };
+    book: {
+        book_name: string;
+        author_name: string;
+        category: string;
+    }
+  }
 
 // Define the state interface
 interface BookState {
@@ -71,7 +81,7 @@ const bookSlice = createSlice({
             // state.message = "Failed to add book";
         },
 
-        updateBookStart(state, action: PayloadAction<Book>) {
+        updateBookStart(state, action: PayloadAction<FormData>) {
             state.loading = true;
             state.error = null;
             state.success = false;

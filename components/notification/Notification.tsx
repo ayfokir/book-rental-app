@@ -10,7 +10,6 @@ export const Notification: React.FC = () => {
   // const {error, success, message, loading} = useSelector( (state: RootState) => state.addedBook);
   // const {error, success, message, loading} = useSelector( (state: RootState) => state.books);
   const states = useSelector( (state: RootState) => state.books);
-  console.log("inside notification:", state.message)
   
   useEffect(() => {
     if (state.success || states.success) {

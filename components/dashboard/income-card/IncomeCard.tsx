@@ -4,7 +4,7 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import AvailableBooksCard from "../pie-chart/AvailableBooksCard";
 const IncomeCard: React.FC = () => {
   return (
-    <Box sx={{ backgroundColor: "white", height: "113vh"}} 
+    <Box sx={{ backgroundColor: "white", height: "124vh"}} 
         marginTop={"24px"} padding={"24px"}>
       <Typography variant="subtitle2" color="text.secondary">
         This Month Statistics

@@ -17,7 +17,7 @@ interface MenuItem {
   link: string
 }
 interface SideBarProps {
-  isFullHeight: boolean; // Prop for dynamic height
+  isFullHeight?: boolean; // Prop for dynamic height
 }
 
 const SideBar: React.FC<SideBarProps> = ({ isFullHeight }) => {
@@ -46,7 +46,7 @@ const SideBar: React.FC<SideBarProps> = ({ isFullHeight }) => {
       sx={{
      // Adjust width as needed
         backgroundColor: 'rgb(23,27,54)', // Set the background color
-        height: isFullHeight ? '125vh' : '100vh', // Use state to determine height
+        height: isFullHeight  ? '136vh' : '110.5vh', // Use state to determine height
         display: 'flex',
         flexDirection: 'column',
         margin: '24px', // Add margin for spacing around the parent component

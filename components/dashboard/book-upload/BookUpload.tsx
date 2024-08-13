@@ -6,7 +6,9 @@ import Header from "@/components/dashboard/header/Header";
 import { useRouter } from "next/navigation";
 import getAuth from "@/app/util/Auth";
 import UploadForm from "@/components/dashboard/book-upload/UploadForm";
+
 const BookUpload: React.FC = () => {
+
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
@@ -23,11 +25,6 @@ const BookUpload: React.FC = () => {
     KnowCustomer;
   }, []);
 
-  // if (loading) {
-  //   // Optionally render a loading spinner or message while checking auth
-  //   return <div>Loading...</div>;
-  // }
-
   return (
     <Box
       sx={{
@@ -38,7 +35,7 @@ const BookUpload: React.FC = () => {
     >
       {/* Sidebar */}
       <Box sx={{ width: isSmallScreen ? "100%" : "20%" }}>
-      <SideBar isFullHeight={false} /> 
+      <SideBar  /> 
       </Box>
 
       {/* Main content */}
@@ -52,7 +49,7 @@ const BookUpload: React.FC = () => {
         }}
       >
         <Header />
-        <Box display={"flex"} justifyContent={"center"}  sx={{backgroundColor: "white", marginTop: "24px", height: "88vh"}}>
+        <Box display={"flex"} justifyContent={"center"}  sx={{backgroundColor: "white", marginTop: "24px", height: "98.3vh"}}>
           
             <UploadForm />
           </Box>

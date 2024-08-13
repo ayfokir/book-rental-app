@@ -38,8 +38,13 @@ const AddBook: React.FC<AddBookProps> = ({ open, onClose }) => {
   useEffect(() => {
     if (success) {
       onClose(); // Close the modal on success or failure
+      setBookData((prev) =>  ({
+        ...prev, 
+        book_name: "",
+        author_name: "",
+        category: "",
+      }))
     }
-    console.log("see when the store change inside Add Book Modal:", message )
   }, [success, error, message]);
   
   

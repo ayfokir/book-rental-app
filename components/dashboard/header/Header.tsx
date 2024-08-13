@@ -4,7 +4,6 @@ import { useAuth } from '@/context/AuthContext';
 
 const Header: React.FC = () => {
 const {role}  = useAuth()
-console.log("role")
   return (
     <Box sx={{backgroundColor: "white", borderRadius: "10px"}}>
    <Toolbar>
