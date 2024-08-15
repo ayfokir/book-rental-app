@@ -3,6 +3,7 @@ import { call, put, takeLatest } from "redux-saga/effects";
 import { UploadBook } from "@/app/api/upload-book/UploadBook";
 import { ReadBookUpload } from "@/app/api/read-book-upload/ReadBookUpload";
 import { EditBookUpload } from "@/app/api/EditBookUpload/EditBookUpload";
+import { DeleteBookUpload } from "@/app/api/delete-book-upload/DeleteBookUpload";
 import {
   fetchBooksStart,
   fetchBooksSuccess,
@@ -42,11 +43,20 @@ export interface Book {
 
 interface ApiResponse {
   success: boolean;
-  message?: string;
-  books: Book[];
-  error?: string;
+  message: string;
+  books?: Book[];
+  error: string;
+  book_id: number
+  
   
 }
+// // Define the type for the result of DeleteBookUpload
+// interface DeleteBookResult {
+//   book_id: number;
+//   message: string;
+//   success: boolean;
+//   error?: string
+// }
 
 // Fetch Books
 function* fetchBooks(): Generator {
@@ -113,11 +123,12 @@ function* updateBook(
 }
 
 // Delete Book
-function* deleteBook(action: PayloadAction<string>): Generator {
+function* deleteBook(action: PayloadAction<number>): Generator {
   try {
-    const result: ApiResponse = yield call(() => UploadBook(action.payload)); // Delete book using UploadBook
+
+    const result:ApiResponse = yield call(() => DeleteBookUpload(action.payload)); // Delete book using UploadBook
     if (result.success) {
-      yield put(deleteBookSuccess(action.payload));
+      yield put(deleteBookSuccess(result));
     } else {
       yield put(deleteBookFailure(result.error || "Failed to delete book"));
     }

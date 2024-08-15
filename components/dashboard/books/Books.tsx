@@ -9,22 +9,22 @@ import BookTable from "../table/BookTable";
 import { MRT_ColumnDef } from "material-react-table";
 import { Book } from "@/app/types/Book";
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store/Store"; 
+import { RootState } from "@/redux/store/Store";
+import StatusSwitch from "./StatusSwitch";
 const Books: React.FC = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const books =   useSelector((state:RootState) => state.books.books)
-  
-  
-  
+  const books = useSelector((state: RootState) => state.books.books);
+
   const formattedBooks = books.map((book, index) => {
     // Generate a sequential book_id starting from "01"
-    const book_id = (index + 1).toString().padStart(2, '0');
+    const book_id = (index + 1).toString().padStart(2, "0");
 
     return {
-      book_id: book_id,
+      id: book_id,
+      book_id: book.book_id,
       author_name: book.book.author_name,
       owner: book.owner.email,
       book_name: book.book.book_name,
@@ -33,8 +33,6 @@ const Books: React.FC = () => {
       // price: `${book.price} Birr`,
     };
   });
-
-
 
   useEffect(() => {
     const KnowCustomer = async () => {
@@ -55,7 +53,7 @@ const Books: React.FC = () => {
 
   const columns: MRT_ColumnDef<Book>[] = [
     {
-      accessorKey: "book_id",
+      accessorKey: "id",
       header: "No.",
       size: 100,
     },
@@ -78,13 +76,13 @@ const Books: React.FC = () => {
       accessorKey: "status",
       header: "Status",
       size: 150,
+      Cell: ({ cell }) => <StatusSwitch />
     },
     {
       accessorKey: "book_name",
       header: "Book Name",
       size: 150,
     },
-   
   ];
 
   return (

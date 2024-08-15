@@ -38,6 +38,12 @@ const initialState: BookState = {
     success: false,
     message: ""
 };
+// Define the type of the action payload
+interface DeleteBookSuccessPayload {
+    book_id: number;
+    message: string;
+    success: boolean;
+  }
 
 const bookSlice = createSlice({
     name: 'books',
@@ -103,17 +109,19 @@ const bookSlice = createSlice({
             // state.message = "Failed to update book";
         },
 
-        deleteBookStart(state, action: PayloadAction<string>) {
+        deleteBookStart(state, action: PayloadAction<number>) {
             state.loading = true;
             state.error = null;
             state.success = false;
             state.message = "";
         },
-        deleteBookSuccess(state, action: PayloadAction<string>) {
+
+        deleteBookSuccess(state, action: PayloadAction<DeleteBookSuccessPayload>) {
             state.loading = false;
             state.success = true;
-            state.message = "Book deleted successfully";
-            state.books = state.books.filter(book => book.book_id !== action.payload);
+            state.message = action.payload.message || "Book deleted successfully";
+            console.log("see action inside  deleteBookSuccess slice:", action)
+            state.books = state.books.filter(book => book.book_id !== action.payload.book_id);
         },
         deleteBookFailure(state, action: PayloadAction<string>) {
             state.loading = false;
