@@ -16,7 +16,7 @@ import { RootState } from "@/redux/store/Store";
 import { fetchBooksStart } from "@/redux/slices/Book";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-
+import { deleteBookStart } from "@/redux/slices/Book";
 const Dashboard: React.FC = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
@@ -24,7 +24,7 @@ const Dashboard: React.FC = () => {
   const dispatch  = useDispatch()
   const books =   useSelector((state:RootState) => state.books.books)
   // Transform the fetched data into the desired format
-
+  console.log(books)
   const formattedBooks = books.map((book, index) => {
     // Generate a sequential book_id starting from "01"
     const book_id = (index + 1).toString().padStart(2, '0');
@@ -110,6 +110,7 @@ const Dashboard: React.FC = () => {
 
   const handleDelete = (book: Book) => {
     // Handle delete action
+    dispatch(deleteBookStart(book.book_id))
     console.log('Delete book:', book);
   };
 

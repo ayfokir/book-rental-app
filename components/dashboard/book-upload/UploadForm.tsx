@@ -58,9 +58,22 @@ const Upload: React.FC = () => {
   const dispatch = useDispatch();
   const selectedBooks = useSelector( (state: RootState) => state.books);
   
+
+ useEffect(() => {
+    if (success) {
+      setFormData((prev) => ({
+        ...prev,
+        selectedBook: "",
+        quantity: "",
+        price: "",
+        bookCover: null,
+      }));
+      // router.push("/dashboard")
+    }
+  }, [success, message]);
+  
   useEffect (()  => {
     if(id && selectedBooks.books.length > 0) {
-     
   let book  =  selectedBooks.books.filter((book)  => book.book_id === parseInt(id))
       console.log("see selected book:", book)
       setFormData((prev) =>  ({
@@ -93,17 +106,6 @@ const Upload: React.FC = () => {
   console.log("see id here:", id)
   console.log("see formData:", formData)
 
-  // useEffect(() => {
-  //   if (success) {
-  //     setFormData((prev) => ({
-  //       ...prev,
-  //       selectedBook: "",
-  //       quantity: "",
-  //       price: "",
-  //       bookCover: null,
-  //     }));
-  //   }
-  // }, [success, message]);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
